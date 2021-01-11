@@ -19,4 +19,7 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.1" />
   </ItemGroup>
+  <ItemGroup>
+    <None Remove="JobPortal.db-shm" />
+  </ItemGroup>
 </Project>

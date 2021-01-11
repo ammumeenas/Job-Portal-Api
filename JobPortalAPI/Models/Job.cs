@@ -8,7 +8,7 @@ namespace JobPortalAPI.Models
         public int id { get; set; }
         public string role { get; set; }
         public int noOfOpenings { get; set; }
-        public string skills { get; set; }
+        public List<JobSkill> JobSkills { get; set; }
         public string jobLocation { get; set; }
         public int yearsOfExperience { get; set; }
         public int noOfApplicants { get; set; }
