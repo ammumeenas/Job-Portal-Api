@@ -24,17 +24,17 @@ namespace JobPortalAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Job>>> GetJobs()
         {
-            return await _context.Jobs
-                .Include(j => j.JobSkills)
-                .ThenInclude(js => js.Skill)
-                .ToListAsync();
+            return await _context.Jobs.ToListAsync();
         }
 
         // GET: api/Job/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Job>> GetJob(int id)
         {
-            var job = await _context.Jobs.FindAsync(id);
+            var job = await _context.Jobs
+        .Include(job => job.JobSkills).ThenInclude(jobskill => jobskill.Skill)
+        .FirstOrDefaultAsync(job => job.id == id);
+        
 
             if (job == null)
             {

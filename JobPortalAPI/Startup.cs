@@ -38,7 +38,8 @@ namespace JobPortalAPI
             });
 
             services.AddDbContext<Models.JobDbContext>();
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson(options =>
+            options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
         }
 
