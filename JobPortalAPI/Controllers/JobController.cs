@@ -39,11 +39,12 @@ namespace JobPortalAPI.Controllers
 
         // GET: api/Job/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Job>> GetJob(int id)
+        public async Task<ActionResult<JobDTO>> GetJob(int id)
         {
             var job = await _context.Jobs
         .Include(job => job.JobSkills).ThenInclude(jobskill => jobskill.Skill)
         .FirstOrDefaultAsync(job => job.id == id);
+            JobDTO jobDTO = _mapper.Map<JobDTO>(job);
         
 
             if (job == null)
@@ -51,7 +52,7 @@ namespace JobPortalAPI.Controllers
                 return NotFound();
             }
 
-            return job;
+            return jobDTO;
         }
 
         // PUT: api/Job/5
