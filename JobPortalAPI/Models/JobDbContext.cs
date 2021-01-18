@@ -9,6 +9,9 @@ namespace JobPortalAPI.Models
 
         public DbSet<JobSkill> JobSkill {get;set;}
 
+        public DbSet<Skill> Skills { get; set; }
+
+
         protected override void OnConfiguring(DbContextOptionsBuilder options)
             => options.UseSqlite("Data Source=JobPortal.db");
 

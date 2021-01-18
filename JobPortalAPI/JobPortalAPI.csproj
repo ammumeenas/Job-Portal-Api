@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <Folder Include="Models\" />
+    <Folder Include="Common\" />
   </ItemGroup>
 
 
@@ -23,6 +24,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.11" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.0" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="JobPortal.db-shm" />

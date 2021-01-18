@@ -6,66 +6,53 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using JobPortalAPI.Models;
-using AutoMapper;
 
 namespace JobPortalAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class JobController : ControllerBase
+    public class SkillController : ControllerBase
     {
         private readonly JobDbContext _context;
-        private readonly IMapper _mapper;
 
-
-        public JobController(JobDbContext context, IMapper mapper)
+        public SkillController(JobDbContext context)
         {
             _context = context;
-            _mapper = mapper;
         }
 
-        // GET: api/Job
+        // GET: api/Skill
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<JobDTO>>> GetJobs()
+        public async Task<ActionResult<IEnumerable<Skill>>> GetSkills()
         {
-
-            List<Job> Jobs= await _context.Jobs
-                 .Include(job => job.JobSkills).ThenInclude(jobskill => jobskill.Skill)
-            .ToListAsync();
-            List<JobDTO> JobDTOs = _mapper.Map<List<JobDTO>>(Jobs);
-
-            return JobDTOs;
+            return await _context.Skills.ToListAsync();
         }
 
-        // GET: api/Job/5
+        // GET: api/Skill/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Job>> GetJob(int id)
+        public async Task<ActionResult<Skill>> GetSkill(int id)
         {
-            var job = await _context.Jobs
-        .Include(job => job.JobSkills).ThenInclude(jobskill => jobskill.Skill)
-        .FirstOrDefaultAsync(job => job.id == id);
-        
+            var skill = await _context.Skills.FindAsync(id);
 
-            if (job == null)
+            if (skill == null)
             {
                 return NotFound();
             }
 
-            return job;
+            return skill;
         }
 
-        // PUT: api/Job/5
+        // PUT: api/Skill/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutJob(int id, Job job)
+        public async Task<IActionResult> PutSkill(int id, Skill skill)
         {
-            if (id != job.id)
+            if (id != skill.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(job).State = EntityState.Modified;
+            _context.Entry(skill).State = EntityState.Modified;
 
             try
             {
@@ -73,7 +60,7 @@ namespace JobPortalAPI.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!JobExists(id))
+                if (!SkillExists(id))
                 {
                     return NotFound();
                 }
@@ -86,37 +73,37 @@ namespace JobPortalAPI.Controllers
             return NoContent();
         }
 
-        // POST: api/Job
+        // POST: api/Skill
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Job>> PostJob(Job job)
+        public async Task<ActionResult<Skill>> PostSkill(Skill skill)
         {
-            _context.Jobs.Add(job);
+            _context.Skills.Add(skill);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetJob", new { id = job.id }, job);
+            return CreatedAtAction("GetSkill", new { id = skill.Id }, skill);
         }
 
-        // DELETE: api/Job/5
+        // DELETE: api/Skill/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Job>> DeleteJob(int id)
+        public async Task<ActionResult<Skill>> DeleteSkill(int id)
         {
-            var job = await _context.Jobs.FindAsync(id);
-            if (job == null)
+            var skill = await _context.Skills.FindAsync(id);
+            if (skill == null)
             {
                 return NotFound();
             }
 
-            _context.Jobs.Remove(job);
+            _context.Skills.Remove(skill);
             await _context.SaveChangesAsync();
 
-            return job;
+            return skill;
         }
 
-        private bool JobExists(int id)
+        private bool SkillExists(int id)
         {
-            return _context.Jobs.Any(e => e.id == id);
+            return _context.Skills.Any(e => e.Id == id);
         }
     }
 }

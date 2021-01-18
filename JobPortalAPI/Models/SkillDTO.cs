@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace JobPortalAPI.Models
 {
-    public class Skill
+    public class SkillDTO
     {
         public int Id { get; set; }
         public string name { get; set; }
