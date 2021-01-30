@@ -7,11 +7,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using JobPortalAPI.Models;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 
 namespace JobPortalAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
+
     public class JobController : ControllerBase
     {
         private readonly JobDbContext _context;
@@ -24,6 +27,7 @@ namespace JobPortalAPI.Controllers
             _mapper = mapper;
         }
 
+       
         // GET: api/Job
         [HttpGet]
         public async Task<ActionResult<IEnumerable<JobDTO>>> GetJobs()
@@ -91,13 +95,16 @@ namespace JobPortalAPI.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Job>> PostJob(Job job)
-        {
-            _context.Jobs.Add(job);
-            await _context.SaveChangesAsync();
+        //public async Task<ActionResult<CreateJobDTO>> PostJob(CreateJobDTO jobDTO)
+        //{
 
-            return CreatedAtAction("GetJob", new { id = job.id }, job);
-        }
+        //    //_context.Jobs.Add(jobDTO);
+        //    await _context.SaveChangesAsync();
+
+        //    //return CreatedAtAction("GetJob", new { id = job.id }, job);
+        //    return CreatedAtAction("GetJob");
+
+        //}
 
         // DELETE: api/Job/5
         [HttpDelete("{id}")]

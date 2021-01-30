@@ -1,17 +1,14 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
-using JobPortalAPI.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 
 namespace JobPortalAPI
 {
@@ -27,6 +24,35 @@ namespace JobPortalAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.Authority = "https://dev-2frg9r3p.us.auth0.com/";
+                options.Audience = "http://localhost:5000";
+
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    NameClaimType = ClaimTypes.NameIdentifier
+                };
+
+                options.Events = new JwtBearerEvents()
+                {
+                    OnAuthenticationFailed = c =>
+                    {
+                        Console.WriteLine("failed:" + c);
+                        return Task.CompletedTask;
+
+                    }
+
+                };
+            });
+
+            //services.AddAuthorization();
+
+            //services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
 
             services.AddCors(options =>
             {
@@ -53,14 +79,24 @@ namespace JobPortalAPI
             {
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
+            }
+
+            app.UseStaticFiles();
 
             app.UseHttpsRedirection();
 
+
             app.UseRouting();
+            app.UseAuthentication();
+
 
             app.UseCors();
 
             app.UseAuthorization();
+
 
             app.UseEndpoints(endpoints =>
             {
