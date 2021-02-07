@@ -2,22 +2,24 @@
 using JobPortalAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace JobPortalAPI.Migrations
 {
     [DbContext(typeof(JobDbContext))]
-    partial class JobDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210207035813_candidskills")]
+    partial class candidskills
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "5.0.1");
 
-            modelBuilder.Entity("JobPortalAPI.Models.Candidate", b =>
+            modelBuilder.Entity("JobPortalAPI.Models.CandidateProfile", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<string>("id")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Experience")
@@ -29,24 +31,9 @@ namespace JobPortalAPI.Migrations
                     b.Property<string>("LName")
                         .HasColumnType("TEXT");
 
-                    b.HasKey("Id");
+                    b.HasKey("id");
 
-                    b.ToTable("Candidates");
-                });
-
-            modelBuilder.Entity("JobPortalAPI.Models.CandidateSkill", b =>
-                {
-                    b.Property<string>("CandidateId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("SkillId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("CandidateId", "SkillId");
-
-                    b.HasIndex("SkillId");
-
-                    b.ToTable("CandidateSkills");
+                    b.ToTable("CandidateProfiles");
                 });
 
             modelBuilder.Entity("JobPortalAPI.Models.Job", b =>
@@ -113,23 +100,24 @@ namespace JobPortalAPI.Migrations
                     b.ToTable("Skills");
                 });
 
-            modelBuilder.Entity("JobPortalAPI.Models.CandidateSkill", b =>
+            modelBuilder.Entity("JobPortalAPI.Models.candidateSkills", b =>
                 {
-                    b.HasOne("JobPortalAPI.Models.Candidate", "Candidate")
-                        .WithMany("CandidateSkills")
-                        .HasForeignKey("CandidateId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<string>("id")
+                        .HasColumnType("TEXT");
 
-                    b.HasOne("JobPortalAPI.Models.Skill", "Skill")
-                        .WithMany()
-                        .HasForeignKey("SkillId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<int>("SkillId")
+                        .HasColumnType("INTEGER");
 
-                    b.Navigation("Candidate");
+                    b.Property<string>("profileid")
+                        .HasColumnType("TEXT");
 
-                    b.Navigation("Skill");
+                    b.HasKey("id", "SkillId");
+
+                    b.HasIndex("SkillId");
+
+                    b.HasIndex("profileid");
+
+                    b.ToTable("CandidateSkills");
                 });
 
             modelBuilder.Entity("JobPortalAPI.Models.JobSkill", b =>
@@ -151,7 +139,24 @@ namespace JobPortalAPI.Migrations
                     b.Navigation("Skill");
                 });
 
-            modelBuilder.Entity("JobPortalAPI.Models.Candidate", b =>
+            modelBuilder.Entity("JobPortalAPI.Models.candidateSkills", b =>
+                {
+                    b.HasOne("JobPortalAPI.Models.Skill", "Skill")
+                        .WithMany()
+                        .HasForeignKey("SkillId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("JobPortalAPI.Models.CandidateProfile", "profile")
+                        .WithMany("CandidateSkills")
+                        .HasForeignKey("profileid");
+
+                    b.Navigation("profile");
+
+                    b.Navigation("Skill");
+                });
+
+            modelBuilder.Entity("JobPortalAPI.Models.CandidateProfile", b =>
                 {
                     b.Navigation("CandidateSkills");
                 });

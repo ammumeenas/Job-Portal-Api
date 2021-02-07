@@ -11,6 +11,11 @@ namespace JobPortalAPI.Models
 
         public DbSet<Skill> Skills { get; set; }
 
+        public DbSet<Candidate> Candidates { get; set; }
+
+        public DbSet<CandidateSkill> CandidateSkills { get; set; }
+
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
             => options.UseSqlite("Data Source=JobPortal.db");
@@ -19,6 +24,10 @@ namespace JobPortalAPI.Models
         {
             modelBuilder.Entity<JobSkill>()
                 .HasKey(cs => new { cs.JobId, cs.SkillId });
+
+            modelBuilder.Entity<CandidateSkill>()
+                .HasKey(cs => new { cs.CandidateId, cs.SkillId });
+
         }
 
     }

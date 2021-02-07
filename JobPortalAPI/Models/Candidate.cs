@@ -3,16 +3,14 @@ using System.Collections.Generic;
 
 namespace JobPortalAPI.Models
 {
-    public class candidateProfile
+    public class Candidate
     {
-        public string id { get; set; }
+        public String Id { get; set; }
         public string FName { get; set; }
         public string LName { get; set; }
         public int Experience { get; set; }
-        public List<Skill> Skills { get; set; 
-
-
-
+        public List<CandidateSkill> CandidateSkills { get; set; }
 
     }
+
 }

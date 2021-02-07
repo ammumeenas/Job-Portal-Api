@@ -31,5 +31,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="JobPortal.db-shm" />
+    <None Remove="JobPortal.db-shm" />
+    <None Remove="JobPortal.db-wal" />
   </ItemGroup>
 </Project>
