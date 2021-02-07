@@ -15,6 +15,9 @@ namespace JobPortalAPI.Models
 
         public DbSet<CandidateSkill> CandidateSkills { get; set; }
 
+        public DbSet<CandidateJob> CandidateJobs { get; set; }
+
+
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
@@ -27,6 +30,9 @@ namespace JobPortalAPI.Models
 
             modelBuilder.Entity<CandidateSkill>()
                 .HasKey(cs => new { cs.CandidateId, cs.SkillId });
+
+            modelBuilder.Entity<CandidateJob>()
+                .HasKey(cs => new { cs.CandidateId, cs.JobId });
 
         }
 
