@@ -63,18 +63,35 @@ namespace JobPortalAPI.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutJob(int id, Job job)
+        public IActionResult PutJob(int id, CreateJobDTO jobDTO)
         {
-            if (id != job.id)
+            Job job = _mapper.Map<Job>(jobDTO);
+            _context.Jobs.Add(job);
+            _context.SaveChanges();
+
+
+            if (id != jobDTO.id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(job).State = EntityState.Modified;
+            _context.Entry(jobDTO).State = EntityState.Modified;
 
             try
             {
-                await _context.SaveChangesAsync();
+                foreach (var JobSkill in job.JobSkills)
+                {
+                    JobSkill jobskill = new JobSkill
+                    {
+                        JobId = JobSkill.JobId,
+                        SkillId = JobSkill.SkillId
+                    };
+                    _context.JobSkill.Add(jobskill);
+
+                }
+                _context.SaveChanges();
+
+
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -91,20 +108,34 @@ namespace JobPortalAPI.Controllers
             return NoContent();
         }
 
-        // POST: api/Job
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
+        //POST: api/Job
+        //To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        //public async Task<ActionResult<CreateJobDTO>> PostJob(CreateJobDTO jobDTO)
-        //{
+        public ActionResult<CreateJobDTO> PostJob(CreateJobDTO jobDTO)
+        {
+            Job job = _mapper.Map<Job>(jobDTO);
+            _context.Jobs.Add(job);
 
-        //    //_context.Jobs.Add(jobDTO);
-        //    await _context.SaveChangesAsync();
+            _context.SaveChanges();
 
-        //    //return CreatedAtAction("GetJob", new { id = job.id }, job);
-        //    return CreatedAtAction("GetJob");
 
-        //}
+            foreach (var skill in jobDTO.Skills)
+            {
+                JobSkill jobSkill = new JobSkill
+                {
+                    JobId = job.id,
+                    SkillId = skill
+                };
+                _context.JobSkill.Add(jobSkill);
+
+            }
+            _context.SaveChanges();
+
+
+            return CreatedAtAction("GetJob", new { id = job.id }, job);
+
+        }
 
         // DELETE: api/Job/5
         [HttpDelete("{id}")]

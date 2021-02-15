@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using JobPortalAPI.Models;
 using AutoMapper;
+using JobPortalAPI.DTO;
+using System.Security.Claims;
 
 namespace JobPortalAPI.Controllers
 {
@@ -26,9 +28,12 @@ namespace JobPortalAPI.Controllers
 
         // GET: api/Candidate
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Candidate>>> GetCandidateProfiles()
+        public async Task<ActionResult<IEnumerable<CandidateDTO>>> GetCandidateProfiles()
         {
-            return await _context.Candidates.Include(candidate => candidate.CandidateSkills).ThenInclude(CandidateSkill => CandidateSkill.Skill).ToListAsync();
+            List<Candidate> candidates = await _context.Candidates
+          .Include(candidate => candidate.CandidateSkills).ThenInclude(CandidateSkill => CandidateSkill.Skill).ToListAsync();
+            List<CandidateDTO> candidateDTOs = _mapper.Map<List<CandidateDTO>>(candidates);
+            return candidateDTOs;
         }
 
         // GET: api/Candidate/5
@@ -38,6 +43,7 @@ namespace JobPortalAPI.Controllers
             var candidate = await _context.Candidates
                 .Include(candidate => candidate.CandidateSkills).ThenInclude(CandidateSkill => CandidateSkill.Skill)
                 .FirstOrDefaultAsync(candidate => candidate.Id == id);
+            CandidateDTO candidateDTO = _mapper.Map<CandidateDTO>(candidate);
 
             if (candidate == null)
             {
@@ -51,8 +57,12 @@ namespace JobPortalAPI.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCandidate(string id, Candidate candidate)
+        public async Task<IActionResult> PutCandidate(string id, CandidateDTO candidateDTO)
         {
+            Candidate candidate = _mapper.Map<Candidate>(candidateDTO);
+            _context.Candidates.Add(candidate);
+            _context.SaveChanges();
+
             if (id != candidate.Id)
             {
                 return BadRequest();
@@ -62,7 +72,18 @@ namespace JobPortalAPI.Controllers
 
             try
             {
-                await _context.SaveChangesAsync();
+
+                foreach (var CandidateSkill in candidate.CandidateSkills)
+                {
+                    CandidateSkill candidateskill = new CandidateSkill
+                    {
+                        CandidateId = candidate.Id,
+                        SkillId = CandidateSkill.SkillId
+                    };
+                    _context.CandidateSkills.Add(candidateskill);
+
+                }
+                _context.SaveChanges();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -83,12 +104,29 @@ namespace JobPortalAPI.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Candidate>> PostCandidate(Candidate candidate)
+        public ActionResult<Candidate> PostCandidate(CreateCandidateDTO candidateDTO)
         {
+            string userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value;
+            Console.WriteLine("userId:" + userId);
+
+            Candidate candidate = _mapper.Map<Candidate>(candidateDTO);
             _context.Candidates.Add(candidate);
+            _context.SaveChanges();
+
             try
             {
-                await _context.SaveChangesAsync();
+                foreach (var skill in candidateDTO.Skills)
+                {
+                    CandidateSkill candidateSkill = new CandidateSkill
+                    {
+                        CandidateId = candidate.Id,
+                        SkillId = skill
+                    };
+                    _context.CandidateSkills.Add(candidateSkill);
+
+                }
+                _context.SaveChanges();
+
             }
             catch (DbUpdateException)
             {
