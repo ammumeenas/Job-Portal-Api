@@ -66,8 +66,7 @@ namespace JobPortalAPI.Controllers
         public IActionResult PutJob(int id, CreateJobDTO jobDTO)
         {
             Job job = _mapper.Map<Job>(jobDTO);
-            _context.Jobs.Add(job);
-            _context.SaveChanges();
+
 
 
             if (id != jobDTO.id)
@@ -75,16 +74,24 @@ namespace JobPortalAPI.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(jobDTO).State = EntityState.Modified;
+            _context.Entry(job).State = EntityState.Modified;
+            _context.SaveChanges();
+
+            
 
             try
             {
-                foreach (var JobSkill in job.JobSkills)
+                JobSkill js = new JobSkill { JobId = jobDTO.id };
+                _context.JobSkill.RemoveRange(_context.JobSkill.Where(js => js.JobId == jobDTO.id));
+                _context.SaveChanges();
+          
+
+                foreach (var skillId in jobDTO.Skills)
                 {
                     JobSkill jobskill = new JobSkill
                     {
-                        JobId = JobSkill.JobId,
-                        SkillId = JobSkill.SkillId
+                        JobId = jobDTO.id,
+                        SkillId = skillId
                     };
                     _context.JobSkill.Add(jobskill);
 

@@ -38,10 +38,10 @@ namespace JobPortalAPI.Controllers
 
         // GET: api/Candidate/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Candidate>> GetCandidate(string id)
+        public async Task<ActionResult<CandidateDTO>> GetCandidate(string id)
         {
             var candidate = await _context.Candidates
-                .Include(candidate => candidate.CandidateSkills).ThenInclude(CandidateSkill => CandidateSkill.Skill)
+                .Include(candidate => candidate.CandidateSkills).ThenInclude(candidateskill => candidateskill.Skill)
                 .FirstOrDefaultAsync(candidate => candidate.Id == id);
             CandidateDTO candidateDTO = _mapper.Map<CandidateDTO>(candidate);
 
@@ -50,14 +50,14 @@ namespace JobPortalAPI.Controllers
                 return NotFound();
             }
 
-            return candidate;
+            return candidateDTO;
         }
 
         // PUT: api/Candidate/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCandidate(string id, CandidateDTO candidateDTO)
+        public IActionResult PutCandidate(string id, CandidateDTO candidateDTO)
         {
             Candidate candidate = _mapper.Map<Candidate>(candidateDTO);
             _context.Candidates.Add(candidate);
@@ -106,8 +106,6 @@ namespace JobPortalAPI.Controllers
         [HttpPost]
         public ActionResult<Candidate> PostCandidate(CreateCandidateDTO candidateDTO)
         {
-            string userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value;
-            Console.WriteLine("userId:" + userId);
 
             Candidate candidate = _mapper.Map<Candidate>(candidateDTO);
             _context.Candidates.Add(candidate);
@@ -115,7 +113,7 @@ namespace JobPortalAPI.Controllers
 
             try
             {
-                foreach (var skill in candidateDTO.Skills)
+                foreach (var skill in candidateDTO.skills)
                 {
                     CandidateSkill candidateSkill = new CandidateSkill
                     {

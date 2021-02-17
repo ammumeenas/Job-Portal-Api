@@ -8,9 +8,9 @@ namespace JobPortalAPI.DTO
     {
 
         public String Id { get; set; }
-        public string FName { get; set; }
-        public string LName { get; set; }
-        public int Experience { get; set; }
-        public List<Skill> Skills { get; set; }
+        public string fName { get; set; }
+        public string lName { get; set; }
+        public int experience { get; set; }
+        public List<Skill> skills { get; set; }
     }
 }
