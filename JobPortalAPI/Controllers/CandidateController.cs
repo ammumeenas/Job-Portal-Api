@@ -57,28 +57,30 @@ namespace JobPortalAPI.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public IActionResult PutCandidate(string id, CandidateDTO candidateDTO)
+        public IActionResult PutCandidate(string id, CreateCandidateDTO candidateDTO)
         {
             Candidate candidate = _mapper.Map<Candidate>(candidateDTO);
-            _context.Candidates.Add(candidate);
-            _context.SaveChanges();
-
+            
             if (id != candidate.Id)
             {
                 return BadRequest();
             }
 
             _context.Entry(candidate).State = EntityState.Modified;
+            _context.SaveChanges();
 
             try
             {
 
-                foreach (var CandidateSkill in candidate.CandidateSkills)
+                CandidateSkill cs = new CandidateSkill { CandidateId= candidateDTO.Id };
+                _context.CandidateSkills.RemoveRange(_context.CandidateSkills.Where(cs => cs.CandidateId == candidateDTO.Id));
+                _context.SaveChanges();
+                foreach (var skillid in candidateDTO.skills)
                 {
                     CandidateSkill candidateskill = new CandidateSkill
                     {
-                        CandidateId = candidate.Id,
-                        SkillId = CandidateSkill.SkillId
+                        CandidateId = candidateDTO.Id,
+                        SkillId = skillid
                     };
                     _context.CandidateSkills.Add(candidateskill);
 
