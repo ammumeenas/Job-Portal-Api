@@ -31,10 +31,11 @@ namespace JobPortalAPI.Controllers
         public async Task<ActionResult<IEnumerable<CandidateDTO>>> GetCandidateProfiles()
         {
             List<Candidate> candidates = await _context.Candidates
-          .Include(candidate => candidate.CandidateSkills).ThenInclude(CandidateSkill => CandidateSkill.Skill).ToListAsync();
+          .Include(candidate => candidate.CandidateSkills).ThenInclude(CandidateSkill => CandidateSkill.Skill)
+          .Include(candidate => candidate.CandidateJobs).ThenInclude(CandidateJob => CandidateJob.Job).ToListAsync();
             List<CandidateDTO> candidateDTOs = _mapper.Map<List<CandidateDTO>>(candidates);
             return candidateDTOs;
-        }
+        } 
 
         // GET: api/Candidate/5
         [HttpGet("{id}")]
@@ -42,6 +43,7 @@ namespace JobPortalAPI.Controllers
         {
             var candidate = await _context.Candidates
                 .Include(candidate => candidate.CandidateSkills).ThenInclude(candidateskill => candidateskill.Skill)
+                .Include(candidate => candidate.CandidateJobs).ThenInclude(CandidateJob => CandidateJob.Job)
                 .FirstOrDefaultAsync(candidate => candidate.Id == id);
             CandidateDTO candidateDTO = _mapper.Map<CandidateDTO>(candidate);
 

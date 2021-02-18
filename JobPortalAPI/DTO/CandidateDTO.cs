@@ -12,5 +12,8 @@ namespace JobPortalAPI.DTO
         public string lName { get; set; }
         public int experience { get; set; }
         public List<Skill> skills { get; set; }
+        public List<Job> jobs { get; set; }
+
+
     }
 }

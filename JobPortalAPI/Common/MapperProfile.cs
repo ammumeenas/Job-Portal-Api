@@ -21,10 +21,12 @@ namespace JobPortalAPI.Common
 
 
             CreateMap<Candidate, CandidateDTO>()
-             .ForMember(dto => dto.skills, c => c.MapFrom(candidate => candidate.CandidateSkills.Select(js => js.Skill)));
+             .ForMember(dto => dto.skills, c => c.MapFrom(candidate => candidate.CandidateSkills.Select(js => js.Skill)))
+            .ForMember(dto => dto.jobs, c => c.MapFrom(candidate => candidate.CandidateJobs.Select(js => js.Job)));
 
-
-            //    .ForMember(job => job.JobSkills, c => {
+            //CreateMap<Candidate, CandidateDTO>()
+            // .ForMember(dto => dto.jobs, c => c.MapFrom(candidate => candidate.CandidateJobs.Select(js => js.Job)));
+            //    .ForMember    (job => job.JobSkills, c => {
 
             //        List<JobSkill> jsList = new List<JobSkill>();
             //        c.MapFrom(createJOBDTO => createJOBDTO.Skills.Select(id => {
