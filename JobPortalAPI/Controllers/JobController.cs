@@ -35,6 +35,7 @@ namespace JobPortalAPI.Controllers
 
             List<Job> Jobs= await _context.Jobs
                  .Include(job => job.JobSkills).ThenInclude(jobskill => jobskill.Skill)
+                 .Include(job => job.CandidateJobs).ThenInclude(candidatejobs => candidatejobs.Job)
             .ToListAsync();
             List<JobDTO> JobDTOs = _mapper.Map<List<JobDTO>>(Jobs);
 
@@ -47,6 +48,7 @@ namespace JobPortalAPI.Controllers
         {
             var job = await _context.Jobs
         .Include(job => job.JobSkills).ThenInclude(jobskill => jobskill.Skill)
+                 .Include(job => job.CandidateJobs).ThenInclude(candidatejobs => candidatejobs.Job)
         .FirstOrDefaultAsync(job => job.id == id);
             JobDTO jobDTO = _mapper.Map<JobDTO>(job);
         

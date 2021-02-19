@@ -13,7 +13,8 @@ namespace JobPortalAPI.Common
             CreateMap<Skill, SkillDTO>();
 
             CreateMap<Job, JobDTO>()
-                .ForMember(dto => dto.Skills, c => c.MapFrom(job => job.JobSkills.Select(js => js.Skill)));
+                .ForMember(dto => dto.Skills, c => c.MapFrom(job => job.JobSkills.Select(js => js.Skill)))
+                .ForMember(dto => dto.Candidates, c => c.MapFrom(job =>job.CandidateJobs.Select(cs => cs.Candidate)));
 
             CreateMap<CreateJobDTO, Job>();
 
@@ -23,6 +24,7 @@ namespace JobPortalAPI.Common
             CreateMap<Candidate, CandidateDTO>()
              .ForMember(dto => dto.skills, c => c.MapFrom(candidate => candidate.CandidateSkills.Select(js => js.Skill)))
             .ForMember(dto => dto.jobs, c => c.MapFrom(candidate => candidate.CandidateJobs.Select(js => js.Job)));
+
 
             //CreateMap<Candidate, CandidateDTO>()
             // .ForMember(dto => dto.jobs, c => c.MapFrom(candidate => candidate.CandidateJobs.Select(js => js.Job)));
