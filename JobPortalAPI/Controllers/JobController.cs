@@ -46,10 +46,17 @@ namespace JobPortalAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<JobDTO>> GetJob(int id)
         {
-            var job = await _context.Jobs
+            Job job = await _context.Jobs
         .Include(job => job.JobSkills).ThenInclude(jobskill => jobskill.Skill)
-                 .Include(job => job.CandidateJobs).ThenInclude(candidatejobs => candidatejobs.Job)
+        .Include(job => job.CandidateJobs).ThenInclude(candidatejob => candidatejob.Job)
         .FirstOrDefaultAsync(job => job.id == id);
+
+            job.CandidateJobs.ForEach((candidateJob) =>
+            {
+                Console.WriteLine(candidateJob.Job.company);
+            }
+                );
+
             JobDTO jobDTO = _mapper.Map<JobDTO>(job);
         
 

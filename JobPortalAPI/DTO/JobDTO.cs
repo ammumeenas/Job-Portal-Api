@@ -15,7 +15,7 @@ namespace JobPortalAPI.Models
         public int noOfApplicants { get; set; }
         public bool isActive { get; set; }
         public string company { get; set; }
-        public List<CandidateDTO> Candidates { get; set; }
+        public List<Candidate> Candidates { get; set; }
 
 
     }
